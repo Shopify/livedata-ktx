@@ -26,8 +26,6 @@ android {
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
-
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -36,16 +34,15 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation 'android.arch.lifecycle:livedata:1.1.1'
-    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation "android.arch.lifecycle:livedata:$arch_version"
+    implementation "com.android.support:appcompat-v7:$appcompat_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 
-    testImplementation 'junit:junit:4.12'
-    testImplementation 'android.arch.core:core-testing:1.1.1'
+    testImplementation "junit:junit:$junit_version"
+    testImplementation "android.arch.core:core-testing:$arch_version"
 }

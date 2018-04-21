@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/livedata-ktx/livedata-ktx.iml" filepath="$PROJECT_DIR$/livedata-ktx/livedata-ktx.iml" />
       <module fileurl="file://$PROJECT_DIR$/livedata-ktx-repo.iml" filepath="$PROJECT_DIR$/livedata-ktx-repo.iml" />
     </modules>
