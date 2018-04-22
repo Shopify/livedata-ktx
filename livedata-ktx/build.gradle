@@ -19,13 +19,13 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion rootProject.ext.android.compileSdkVersion
 
     defaultConfig {
-        minSdkVersion 19
-        targetSdkVersion 27
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion rootProject.ext.android.minSdkVersion
+        targetSdkVersion rootProject.ext.android.targetSdkVersion
+        versionCode rootProject.ext.android.versionCode
+        versionName rootProject.ext.android.versionName
     }
 
     buildTypes {
@@ -34,6 +34,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+}
+
+sourceSets {
+    main.java.srcDirs += 'src/main/kotlin'
 }
 
 dependencies {
@@ -46,3 +50,15 @@ dependencies {
     testImplementation "junit:junit:$junit_version"
     testImplementation "android.arch.core:core-testing:$arch_version"
 }
+
+// kotlin docs
+apply plugin: 'org.jetbrains.dokka'
+
+task dokkaJavadoc(type: org.jetbrains.dokka.gradle.DokkaTask) {
+    outputFormat = "javadoc"
+    outputDirectory = "$buildDir/dokkaJavadoc"
+}
+
+// bintray upload
+apply from: "https://raw.githubusercontent.com/henrytao-me/bintray/master/installv1.gradle"
+apply from: "https://raw.githubusercontent.com/henrytao-me/bintray/master/bintrayv1.gradle"

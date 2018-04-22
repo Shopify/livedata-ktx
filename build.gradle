@@ -4,8 +4,42 @@ buildscript {
     ext {
         appcompat_version = '27.1.1'
         arch_version = '1.1.1'
+        dokka_version = '0.9.16'
         junit_version = '4.12'
         kotlin_version = '1.2.30'
+
+        android = [
+                compileSdkVersion: 27,
+                applicationId    : "me.henrytao.livedataktx",
+                minSdkVersion    : 19,
+                targetSdkVersion : 27,
+                versionCode      : 1,
+                versionName      : "0.1.11"
+        ]
+
+        bintray = [
+                bintrayRepo       : "maven",
+                bintrayName       : "livedata-ktx",
+
+                publishedGroupId  : "me.henrytao",
+                libraryName       : "LiveDataKtx",
+                artifact          : "livedata-ktx",
+
+                libraryDescription: "Kotlin extension for LiveData, chaining like RxJava",
+
+                siteUrl           : "https://github.com/henrytao-me/livedata-ktx",
+                gitUrl            : "https://github.com/henrytao-me/livedata-ktx",
+
+                libraryVersion    : rootProject.ext.android.versionName,
+
+                developerId       : "henrytao",
+                developerName     : "Henry Tao",
+                developerEmail    : "hi@henrytao.me",
+
+                licenseName       : "The Apache Software License, Version 2.0",
+                licenseUrl        : "http://www.apache.org/licenses/LICENSE-2.0.txt",
+                allLicenses       : ["Apache-2.0"]
+        ]
     }
     repositories {
         google()
@@ -13,7 +47,10 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.1.1'
+        classpath "org.jetbrains.dokka:dokka-gradle-plugin:$dokka_version"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.0'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
