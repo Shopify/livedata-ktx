@@ -5,6 +5,10 @@ Kotlin extension for LiveData, chaining like RxJava
 
 # Usage (WIP)
 
+```groovy
+implementation "me.henrytao:livedata-ktx:*"
+```
+
 ```kotlin
 val liveData: MutableLiveData<Boolean> = MutableLiveData()
 liveData
