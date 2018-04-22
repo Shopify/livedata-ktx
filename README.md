@@ -3,7 +3,7 @@
 # livedata-ktx
 Kotlin extension for LiveData, chaining like RxJava
 
-# Usage (still WIP)
+# Usage (WIP)
 
 ```kotlin
 val liveData: MutableLiveData<Boolean> = MutableLiveData()
