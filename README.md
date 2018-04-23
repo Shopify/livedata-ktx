@@ -48,6 +48,11 @@ val removable = liveData
 removable.removeObserver()
 ```
 
+# Feel missing methods
+
+Please suggest what you need by creating issues. I will support it as fast as I can. 
+
+
 # Contributing
 
 Any contributions are welcome!  
