@@ -34,7 +34,7 @@ liveData
 
 ### Remove observer
 
-Because the input observer goes through a wrapper before it observes in source LiveData. So that you can't just simply remove it by just calling origin method `liveData.removeObserver`.
+Because the input observer goes through a wrapper before it observes to source LiveData. So that you can't just simply remove it by just calling origin method `liveData.removeObserver`.
  
 The new observe method returns `Removable` interface that allows you to remove observer effectively.  
 
