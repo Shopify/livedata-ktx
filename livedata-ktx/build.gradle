@@ -53,6 +53,9 @@ task dokkaJavadoc(type: org.jetbrains.dokka.gradle.DokkaTask) {
     outputFormat = "javadoc"
     outputDirectory = "$buildDir/dokkaJavadoc"
 }
+tasks.withType(Javadoc) {
+    enabled = false
+}
 
 // bintray upload
 apply from: "https://raw.githubusercontent.com/henrytao-me/bintray/master/installv1.gradle"
