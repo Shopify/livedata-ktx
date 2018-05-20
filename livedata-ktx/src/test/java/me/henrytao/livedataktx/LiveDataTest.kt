@@ -21,6 +21,7 @@ import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.LifecycleRegistry
 import android.arch.lifecycle.MutableLiveData
+import android.arch.lifecycle.Observer
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -144,6 +145,23 @@ class LiveDataTest : LifecycleOwner {
         liveData.value = null
 
         val expecteds = mutableListOf(true, false, false, true)
+        assertEquals(expecteds, actuals)
+    }
+
+    @Test
+    fun single_emitValueIfItCallsObserveMoreThanOne() {
+        val liveData: MutableLiveData<Boolean> = SingleLiveData()
+        val actuals: MutableList<Boolean?> = mutableListOf()
+        val observer: (t: Boolean?) -> Unit = { actuals.add(it) }
+
+        liveData.value = true
+        liveData.map { true }.observe(this, observer)
+        liveData.value = false
+        liveData.observe(this, observer)
+        liveData.value = false
+
+        //val expecteds = mutableListOf(false, false, false)
+        val expecteds = mutableListOf(true, true, false)
         assertEquals(expecteds, actuals)
     }
 }

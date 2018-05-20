@@ -20,6 +20,7 @@ import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MediatorLiveData
 import android.arch.lifecycle.Observer
+import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * distinct
@@ -27,7 +28,7 @@ import android.arch.lifecycle.Observer
 
 private class DistinctExt<T> : MediatorObserver<T, T> {
 
-    override fun run(source: LiveData<T>, mediator: MediatorLiveData<T>, value: T?) {
+    override fun run(source: LiveData<T>, mediator: NonNullMediatorLiveData<T>, value: T?) {
         if (value != mediator.value) {
             mediator.value = value
         }
@@ -43,7 +44,7 @@ fun <T> NonNullMediatorLiveData<T>.distinct(): NonNullMediatorLiveData<T> = crea
 
 private class FilterExt<T>(private val predicate: (T?) -> Boolean) : MediatorObserver<T, T> {
 
-    override fun run(source: LiveData<T>, mediator: MediatorLiveData<T>, value: T?) {
+    override fun run(source: LiveData<T>, mediator: NonNullMediatorLiveData<T>, value: T?) {
         if (predicate(value)) {
             mediator.value = value
         }
@@ -59,9 +60,9 @@ fun <T> NonNullMediatorLiveData<T>.filter(predicate: (T) -> Boolean): NonNullMed
  * first
  */
 
-private class FirstExt<T>() : MediatorObserver<T, T> {
+private class FirstExt<T> : MediatorObserver<T, T> {
 
-    override fun run(source: LiveData<T>, mediator: MediatorLiveData<T>, value: T?) {
+    override fun run(source: LiveData<T>, mediator: NonNullMediatorLiveData<T>, value: T?) {
         mediator.value = value
         mediator.removeSource(source)
     }
@@ -76,7 +77,7 @@ fun <T> NonNullMediatorLiveData<T>.first(): NonNullMediatorLiveData<T> = createM
 
 private class MapExt<T, R>(private val mapper: (T?) -> R?) : MediatorObserver<T, R> {
 
-    override fun run(source: LiveData<T>, mediator: MediatorLiveData<R>, value: T?) {
+    override fun run(source: LiveData<T>, mediator: NonNullMediatorLiveData<R>, value: T?) {
         mediator.value = mapper(value)
     }
 }
@@ -127,7 +128,31 @@ fun <T> NonNullMediatorLiveData<T>.observeForever(observer: (t: T) -> Unit): Rem
  * Supporting classes
  */
 
-class NonNullMediatorLiveData<T> : MediatorLiveData<T>()
+open class NonNullMediatorLiveData<T>(internal val isSingle: Boolean = false, internal val getVersion: (() -> Int)? = null) : MediatorLiveData<T>() {
+
+    internal var version = AtomicInteger()
+
+    override fun observe(owner: LifecycleOwner, observer: Observer<T>) {
+        val observerVersion = getVersion?.let { it() } ?: version.get()
+        super.observe(owner, Observer {
+            if (isSingle && observerVersion < getVersion?.let { it() } ?: version.get()) {
+                observer.onChanged(it)
+            }
+        })
+    }
+
+    override fun setValue(value: T?) {
+        version.incrementAndGet()
+        super.setValue(value)
+    }
+
+    override fun postValue(value: T?) {
+        version.incrementAndGet()
+        super.postValue(value)
+    }
+}
+
+open class SingleLiveData<T> : NonNullMediatorLiveData<T>(true)
 
 interface Removable {
 
@@ -136,11 +161,17 @@ interface Removable {
 
 private interface MediatorObserver<IN, OUT> {
 
-    fun run(source: LiveData<IN>, mediator: MediatorLiveData<OUT>, value: IN?)
+    fun run(source: LiveData<IN>, mediator: NonNullMediatorLiveData<OUT>, value: IN?)
 }
 
 private fun <IN, OUT> createMediator(source: LiveData<IN>, observer: MediatorObserver<IN, OUT>): NonNullMediatorLiveData<OUT> {
-    val mediator: NonNullMediatorLiveData<OUT> = NonNullMediatorLiveData()
+    var isSingle = false
+    var getVersion: (() -> Int)? = null
+    if (source is NonNullMediatorLiveData && source.isSingle) {
+        isSingle = true
+        getVersion = { source.version.get() }
+    }
+    val mediator: NonNullMediatorLiveData<OUT> = NonNullMediatorLiveData(isSingle, getVersion)
     mediator.addSource(source, Observer { observer.run(source, mediator, it) })
     return mediator
 }
