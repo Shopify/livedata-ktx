@@ -146,4 +146,66 @@ class LiveDataTest : LifecycleOwner {
         val expecteds = mutableListOf(true, false, false, true)
         assertEquals(expecteds, actuals)
     }
+
+    @Test
+    fun single_observeDirectly() {
+        val liveData: MutableLiveData<Int> = SingleLiveData()
+        val actuals: MutableList<Int?> = mutableListOf()
+        val observer: (t: Int?) -> Unit = { actuals.add(it) }
+
+        liveData.value = 1
+        liveData.observe(this, observer)
+        liveData.value = 2
+        liveData.value = 3
+
+        val expecteds = mutableListOf(2, 3)
+        assertEquals(expecteds, actuals)
+    }
+
+    @Test
+    fun single_observeDirectlyMoreThanOneInDifferentTime() {
+        val liveData: MutableLiveData<Int> = SingleLiveData()
+        val actuals1: MutableList<Int?> = mutableListOf()
+        val observer1: (t: Int?) -> Unit = { actuals1.add(it) }
+        val actuals2: MutableList<Int?> = mutableListOf()
+        val observer2: (t: Int?) -> Unit = { actuals2.add(it) }
+
+        liveData.value = 1
+        liveData.observe(this, observer1)
+        liveData.value = 2
+        liveData.observe(this, observer2)
+        liveData.value = 3
+        liveData.value = 4
+
+        val expecteds1 = mutableListOf(2, 3, 4)
+        val expecteds2 = mutableListOf(3, 4)
+        assertEquals(expecteds1, actuals1)
+        assertEquals(expecteds2, actuals2)
+    }
+
+    @Test
+    fun single_combineWithOtherExtension() {
+        val liveData: MutableLiveData<Int> = SingleLiveData()
+        val actuals1: MutableList<Int?> = mutableListOf()
+        val observer1: (t: Int?) -> Unit = { actuals1.add(it) }
+        val actuals2: MutableList<Int?> = mutableListOf()
+        val observer2: (t: Int?) -> Unit = { actuals2.add(it) }
+
+        liveData.value = 1
+        liveData
+                .map { it?.let { it + 1 } }
+                .observe(this, observer1)
+        liveData.value = 2
+        liveData
+                .nonNull()
+                .map { it + 2 }
+                .observe(this, observer2)
+        liveData.value = 3
+        liveData.value = 4
+
+        val expecteds1 = mutableListOf(3, 4, 5)
+        val expecteds2 = mutableListOf(5, 6)
+        assertEquals(expecteds1, actuals1)
+        assertEquals(expecteds2, actuals2)
+    }
 }
