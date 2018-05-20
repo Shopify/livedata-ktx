@@ -48,6 +48,27 @@ val removable = liveData
 removable.removeObserver()
 ```
 
+### SingleLiveData
+
+It is a lifecycle-aware observable that sends only new updates after subscription, used for events like navigation and Snackbar messages. `livedata-ktx` has different implementation comparing to SingleLiveEvent from [google samples android-architecture](https://github.com/googlesamples/android-architecture/blob/dev-todo-mvvm-live/todoapp/app/src/main/java/com/example/android/architecture/blueprints/todoapp/SingleLiveEvent.java).
+
+```kotlin
+val liveData: MutableLiveData<Int> = SingleLiveData()
+val actuals: MutableList<Int?> = mutableListOf()
+val observer: (t: Int?) -> Unit = { actuals.add(it) }
+
+liveData.value = 1
+liveData.observe(this, observer)
+liveData.value = 2
+liveData.value = 3
+
+val expecteds = mutableListOf(2, 3)
+assertEquals(expecteds, actuals)
+```
+
+For more use cases, please see the tests at [LiveDataTest.kt](https://github.com/henrytao-me/livedata-ktx/blob/master/livedata-ktx/src/test/java/me/henrytao/livedataktx/LiveDataTest.kt)
+
+
 # Feel missing methods
 
 Please suggest what you need by creating issues. I will support it as fast as I can. 
