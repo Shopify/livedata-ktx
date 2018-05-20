@@ -19,6 +19,27 @@ package me.henrytao.livedataktx
 import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.Observer
+import android.os.Handler
+
+/**
+ * debounce
+ */
+private class DebounceExt<T>(private val delayMillis: Long) : MediatorObserver<T, T> {
+
+    private val handler = Handler()
+    private var runnable: Runnable? = null
+
+    override fun run(source: LiveData<T>, mediator: SupportMediatorLiveData<T>, value: T?) {
+        if (runnable != null) {
+            handler.removeCallbacks(runnable)
+        }
+        runnable = Runnable { mediator.value = value }
+        handler.postDelayed(runnable, delayMillis)
+    }
+}
+
+fun <T> LiveData<T>.debounce(delayMillis: Long): LiveData<T> = createMediator(this, DebounceExt(delayMillis))
+fun <T> SupportMediatorLiveData<T>.debounce(delayMillis: Long): SupportMediatorLiveData<T> = createMediator(this, DebounceExt(delayMillis))
 
 /**
  * distinct
