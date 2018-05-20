@@ -16,4 +16,9 @@
 
 package me.henrytao.livedataktx
 
+/**
+ * A lifecycle-aware observable that sends only new updates after subscription, used for events like
+ * navigation and Snackbar messages.
+ * Ref: https://github.com/googlesamples/android-architecture/blob/dev-todo-mvvm-live/todoapp/app/src/main/java/com/example/android/architecture/blueprints/todoapp/SingleLiveEvent.java
+ */
 open class SingleLiveData<T> : SupportMediatorLiveData<T>(true)
