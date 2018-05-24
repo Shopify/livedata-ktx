@@ -26,6 +26,7 @@ open class SupportMediatorLiveData<T>(internal val isSingle: Boolean = false, pr
     private var _version = AtomicInteger()
     internal val version: Int get() = versionProvider?.let { it() } ?: _version.get()
 
+    @Deprecated("Use observe extension")
     override fun observe(owner: LifecycleOwner, observer: Observer<T>) {
         val observerVersion = version
         super.observe(owner, Observer {
@@ -33,6 +34,11 @@ open class SupportMediatorLiveData<T>(internal val isSingle: Boolean = false, pr
                 observer.onChanged(it)
             }
         })
+    }
+
+    @Deprecated("Use observe extension without LifecycleOwner")
+    override fun observeForever(observer: Observer<T>) {
+        super.observeForever(observer)
     }
 
     override fun setValue(value: T?) {
