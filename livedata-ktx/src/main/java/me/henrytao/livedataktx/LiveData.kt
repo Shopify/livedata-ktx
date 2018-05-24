@@ -120,20 +120,22 @@ fun <T> LiveData<T>.observe(owner: LifecycleOwner, observer: (t: T?) -> Unit): R
     return removable
 }
 
-fun <T> LiveData<T>.observeForever(observer: (t: T?) -> Unit): Removable {
+fun <T> LiveData<T>.observe(observer: (t: T?) -> Unit): Removable {
     val removable: RemovableImpl<T> = RemovableImpl(this, Observer { observer(it) })
     observeForever(removable.observer)
     return removable
 }
 
+@Suppress("DEPRECATION")
 fun <T> SupportMediatorLiveData<T>.observe(owner: LifecycleOwner, observer: (t: T) -> Unit): Removable {
     val removable: RemovableImpl<T> = RemovableImpl(this, Observer { it?.let(observer) })
     observe(owner, removable.observer)
     return removable
 }
 
-fun <T> SupportMediatorLiveData<T>.observeForever(observer: (t: T) -> Unit): Removable {
-    val removable: RemovableImpl<T> = RemovableImpl(this, Observer { it?.let(observer) })
+@Suppress("DEPRECATION")
+fun <T> SupportMediatorLiveData<T>.observe(observer: (t: T) -> Unit): Removable {
+    val removable: RemovableImpl<T> = RemovableImpl(this, Observer { it?.let { observer(it) } })
     observeForever(removable.observer)
     return removable
 }
