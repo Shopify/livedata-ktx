@@ -19,12 +19,11 @@ package me.henrytao.livedataktx
 import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.MediatorLiveData
 import android.arch.lifecycle.Observer
-import java.util.concurrent.atomic.AtomicInteger
 
 open class SupportMediatorLiveData<T>(internal val isSingle: Boolean = false, private val versionProvider: (() -> Int)? = null) : MediatorLiveData<T>() {
 
-    private var _version = AtomicInteger()
-    internal val version: Int get() = versionProvider?.let { it() } ?: _version.get()
+    private var _version = 0
+    internal val version: Int get() = versionProvider?.let { it() } ?: _version
 
     @Deprecated("Use observe extension")
     override fun observe(owner: LifecycleOwner, observer: Observer<T>) {
@@ -42,12 +41,7 @@ open class SupportMediatorLiveData<T>(internal val isSingle: Boolean = false, pr
     }
 
     override fun setValue(value: T?) {
-        _version.incrementAndGet()
+        _version++
         super.setValue(value)
-    }
-
-    override fun postValue(value: T?) {
-        _version.incrementAndGet()
-        super.postValue(value)
     }
 }

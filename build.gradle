@@ -14,7 +14,7 @@ buildscript {
                 minSdkVersion    : 19,
                 targetSdkVersion : 27,
                 versionCode      : 1,
-                versionName      : "0.1.15"
+                versionName      : "0.1.16"
         ]
 
         bintray = [
