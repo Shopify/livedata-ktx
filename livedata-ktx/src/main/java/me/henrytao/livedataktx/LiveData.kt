@@ -29,7 +29,7 @@ private class DebounceExt<T>(private val delayMillis: Long) : MediatorObserver<T
     private val handler = Handler()
     private var runnable: Runnable? = null
 
-    override fun run(source: LiveData<T>, mediator: SupportMediatorLiveData<T>, value: T?) {
+    override fun run(source: LiveData<T>, mediator: SupportMediatorLiveData<T>, value: T) {
         if (runnable != null) {
             handler.removeCallbacks(runnable)
         }
@@ -46,7 +46,7 @@ fun <T> SupportMediatorLiveData<T>.debounce(delayMillis: Long): SupportMediatorL
  */
 private class DistinctExt<T> : MediatorObserver<T, T> {
 
-    override fun run(source: LiveData<T>, mediator: SupportMediatorLiveData<T>, value: T?) {
+    override fun run(source: LiveData<T>, mediator: SupportMediatorLiveData<T>, value: T) {
         if (value != mediator.value) {
             mediator.value = value
         }
@@ -59,18 +59,18 @@ fun <T> SupportMediatorLiveData<T>.distinct(): SupportMediatorLiveData<T> = crea
 /**
  * filter
  */
-private class FilterExt<T>(private val predicate: (T?) -> Boolean) : MediatorObserver<T, T> {
+private class FilterExt<T>(private val predicate: (T) -> Boolean) : MediatorObserver<T, T> {
 
-    override fun run(source: LiveData<T>, mediator: SupportMediatorLiveData<T>, value: T?) {
+    override fun run(source: LiveData<T>, mediator: SupportMediatorLiveData<T>, value: T) {
         if (predicate(value)) {
             mediator.value = value
         }
     }
 }
 
-fun <T> LiveData<T>.filter(predicate: (T?) -> Boolean): LiveData<T> = createMediator(this, FilterExt<T>(predicate))
+fun <T> LiveData<T>.filter(predicate: (T) -> Boolean): LiveData<T> = createMediator(this, FilterExt(predicate))
 fun <T> SupportMediatorLiveData<T>.filter(predicate: (T) -> Boolean): SupportMediatorLiveData<T> = createMediator(this, FilterExt<T>({
-    predicate(it!!)
+    predicate(it)
 }))
 
 /**
@@ -78,7 +78,7 @@ fun <T> SupportMediatorLiveData<T>.filter(predicate: (T) -> Boolean): SupportMed
  */
 private class FirstExt<T> : MediatorObserver<T, T> {
 
-    override fun run(source: LiveData<T>, mediator: SupportMediatorLiveData<T>, value: T?) {
+    override fun run(source: LiveData<T>, mediator: SupportMediatorLiveData<T>, value: T) {
         mediator.value = value
         mediator.removeSource(source)
     }
@@ -90,23 +90,23 @@ fun <T> SupportMediatorLiveData<T>.first(): SupportMediatorLiveData<T> = createM
 /**
  * map
  */
-private class MapExt<T, R>(private val mapper: (T?) -> R?) : MediatorObserver<T, R> {
+private class MapExt<T, R>(private val mapper: (T) -> R) : MediatorObserver<T, R> {
 
-    override fun run(source: LiveData<T>, mediator: SupportMediatorLiveData<R>, value: T?) {
+    override fun run(source: LiveData<T>, mediator: SupportMediatorLiveData<R>, value: T) {
         mediator.value = mapper(value)
     }
 }
 
-fun <T, R> LiveData<T>.map(mapper: (T?) -> R?): LiveData<R> = createMediator(this, MapExt<T, R>(mapper))
+fun <T, R> LiveData<T>.map(mapper: (T) -> R): LiveData<R> = createMediator(this, MapExt(mapper))
 fun <T, R> SupportMediatorLiveData<T>.map(mapper: (T) -> R): SupportMediatorLiveData<R> = createMediator(this, MapExt<T, R>({
-    return@MapExt mapper(it!!)!!
+    return@MapExt mapper(it)
 }))
 
 /**
  * nonNull
  */
 fun <T> LiveData<T>.nonNull(): SupportMediatorLiveData<T> = createMediator(this, object : MediatorObserver<T, T> {
-    override fun run(source: LiveData<T>, mediator: SupportMediatorLiveData<T>, value: T?) {
+    override fun run(source: LiveData<T>, mediator: SupportMediatorLiveData<T>, value: T) {
         value?.let { mediator.value = it }
     }
 })
@@ -114,28 +114,30 @@ fun <T> LiveData<T>.nonNull(): SupportMediatorLiveData<T> = createMediator(this,
 /**
  * observers
  */
-fun <T> LiveData<T>.observe(owner: LifecycleOwner, observer: (t: T?) -> Unit): Removable {
-    val removable: RemovableImpl<T> = RemovableImpl(this, Observer { observer(it) })
+@Suppress("UNCHECKED_CAST")
+fun <T> LiveData<T>.observe(owner: LifecycleOwner, observer: (t: T) -> Unit): Removable {
+    val removable: RemovableImpl<T> = RemovableImpl(this, Observer { observer(it as T) })
     observe(owner, removable.observer)
     return removable
 }
 
-fun <T> LiveData<T>.observe(observer: (t: T?) -> Unit): Removable {
-    val removable: RemovableImpl<T> = RemovableImpl(this, Observer { observer(it) })
+@Suppress("UNCHECKED_CAST")
+fun <T> LiveData<T>.observe(observer: (t: T) -> Unit): Removable {
+    val removable: RemovableImpl<T> = RemovableImpl(this, Observer { observer(it as T) })
     observeForever(removable.observer)
     return removable
 }
 
-@Suppress("DEPRECATION")
+@Suppress("DEPRECATION", "UNCHECKED_CAST")
 fun <T> SupportMediatorLiveData<T>.observe(owner: LifecycleOwner, observer: (t: T) -> Unit): Removable {
-    val removable: RemovableImpl<T> = RemovableImpl(this, Observer { it?.let(observer) })
+    val removable: RemovableImpl<T> = RemovableImpl(this, Observer { observer(it as T) })
     observe(owner, removable.observer)
     return removable
 }
 
-@Suppress("DEPRECATION")
+@Suppress("DEPRECATION", "UNCHECKED_CAST")
 fun <T> SupportMediatorLiveData<T>.observe(observer: (t: T) -> Unit): Removable {
-    val removable: RemovableImpl<T> = RemovableImpl(this, Observer { it?.let { observer(it) } })
+    val removable: RemovableImpl<T> = RemovableImpl(this, Observer { observer(it as T) })
     observeForever(removable.observer)
     return removable
 }
@@ -145,9 +147,10 @@ fun <T> SupportMediatorLiveData<T>.observe(observer: (t: T) -> Unit): Removable 
  */
 private interface MediatorObserver<IN, OUT> {
 
-    fun run(source: LiveData<IN>, mediator: SupportMediatorLiveData<OUT>, value: IN?)
+    fun run(source: LiveData<IN>, mediator: SupportMediatorLiveData<OUT>, value: IN)
 }
 
+@Suppress("UNCHECKED_CAST")
 private fun <IN, OUT> createMediator(source: LiveData<IN>, observer: MediatorObserver<IN, OUT>): SupportMediatorLiveData<OUT> {
     var isSingle = false
     var versionProvider: (() -> Int)? = null
@@ -156,7 +159,7 @@ private fun <IN, OUT> createMediator(source: LiveData<IN>, observer: MediatorObs
         versionProvider = { source.version }
     }
     val mediator: SupportMediatorLiveData<OUT> = SupportMediatorLiveData(isSingle, versionProvider)
-    mediator.addSource(source, Observer { observer.run(source, mediator, it) })
+    mediator.addSource(source, Observer { observer.run(source, mediator, it as IN) })
     return mediator
 }
 

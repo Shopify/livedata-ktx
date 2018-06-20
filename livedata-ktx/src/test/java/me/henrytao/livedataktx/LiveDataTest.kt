@@ -127,9 +127,9 @@ class LiveDataTest : LifecycleOwner {
 
     @Test
     fun nonNull() {
-        val liveData: MutableLiveData<Boolean> = MutableLiveData()
-        val actuals: MutableList<Boolean> = mutableListOf()
-        val observer: (t: Boolean) -> Unit = { actuals.add(it) }
+        val liveData: MutableLiveData<Boolean?> = MutableLiveData()
+        val actuals: MutableList<Boolean?> = mutableListOf()
+        val observer: (t: Boolean?) -> Unit = { actuals.add(it) }
         liveData
                 .nonNull()
                 .observe(this, observer)
