@@ -1,5 +1,9 @@
 # livedata-ktx #
 
+### Transferring ownership – 06/27/2018 ###
+
+- Prepare to transfer ownership to Shopify
+
 ### Version 0.1.17 – 06/27/2018 ###
 
 - Set minSdk to 16
