@@ -1,6 +1,10 @@
 # livedata-ktx #
 
-### Version 0.1.16 – 06/6/2018 ###
+### Version 0.1.17 – 06/27/2018 ###
+
+- Set minSdk to 16
+
+### Version 0.1.16 – 06/06/2018 ###
 
 - Fix race condition in SupportMediatorLiveData when calling postValue
 

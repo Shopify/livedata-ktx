@@ -11,10 +11,10 @@ buildscript {
         android = [
                 compileSdkVersion: 27,
                 applicationId    : "me.henrytao.livedataktx",
-                minSdkVersion    : 19,
+                minSdkVersion    : 16,
                 targetSdkVersion : 27,
                 versionCode      : 1,
-                versionName      : "0.1.16"
+                versionName      : "0.1.17"
         ]
 
         bintray = [
