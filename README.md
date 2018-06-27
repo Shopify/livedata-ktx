@@ -1,3 +1,5 @@
+### NOTICE: TRANSFERRING OWNERSHIP IS IN PROGRESS
+
 [![GitHub license](https://img.shields.io/badge/license-MIT-lightgrey.svg?maxAge=2592000)](https://raw.githubusercontent.com/henrytao-me/livedata-ktx/master/LICENSE)
 [ ![Download](https://api.bintray.com/packages/henrytao-me/maven/livedata-ktx/images/download.svg) ](https://bintray.com/henrytao-me/maven/livedata-ktx/_latestVersion)
 
