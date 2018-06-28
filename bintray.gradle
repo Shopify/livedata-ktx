@@ -1,0 +1,127 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2018 Shopify Inc.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
+/**
+ * Task: install
+ */
+
+apply plugin: "com.github.dcendents.android-maven"
+
+// Maven Group ID for the artifact
+group = rootProject.ext.bintray.publishedGroupId
+
+install {
+    repositories.mavenInstaller {
+        // This generates POM.xml with proper parameters
+        pom {
+            project {
+                packaging "aar"
+                groupId rootProject.ext.bintray.publishedGroupId
+                artifactId rootProject.ext.bintray.artifact
+
+                // Add your description here
+                name rootProject.ext.bintray.libraryName
+                description rootProject.ext.bintray.libraryDescription
+                url rootProject.ext.bintray.siteUrl
+
+                // Set your license
+                licenses {
+                    license {
+                        name rootProject.ext.bintray.licenseName
+                        url rootProject.ext.bintray.licenseUrl
+                    }
+                }
+                developers {
+                    developer {
+                        id rootProject.ext.bintray.developerId
+                        name rootProject.ext.bintray.developerName
+                        email rootProject.ext.bintray.developerEmail
+                    }
+                }
+                scm {
+                    connection rootProject.ext.bintray.gitUrl
+                    developerConnection rootProject.ext.bintray.gitUrl
+                    url rootProject.ext.bintray.siteUrl
+
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Task: bintrayUpload
+ */
+
+apply plugin: 'com.jfrog.bintray'
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = "sources"
+}
+
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = "javadoc"
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file("local.properties").newDataInputStream())
+
+version = rootProject.ext.bintray.libraryVersion
+
+bintray {
+    user = properties.getProperty("bintray.user")
+    key = properties.getProperty("bintray.apikey")
+
+    configurations = ["archives"]
+    pkg {
+        repo = rootProject.ext.bintray.bintrayRepo
+        name = rootProject.ext.bintray.bintrayName
+        desc = rootProject.ext.bintray.libraryDescription
+        websiteUrl = rootProject.ext.bintray.siteUrl
+        vcsUrl = rootProject.ext.bintray.gitUrl
+        licenses = rootProject.ext.bintray.allLicenses
+        publish = true
+        publicDownloadNumbers = true
+        userOrg = rootProject.ext.bintray.bintrayOrg
+        version {
+            desc = rootProject.ext.bintray.libraryDescription
+            gpg {
+                sign = true //Determines whether to GPG sign the files. The default is false
+                passphrase = properties.getProperty("bintray.gpg.password")
+            }
+        }
+    }
+}

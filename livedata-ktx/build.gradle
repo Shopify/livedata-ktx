@@ -65,6 +65,4 @@ tasks.withType(Javadoc) {
     enabled = false
 }
 
-// bintray upload
-apply from: "https://raw.githubusercontent.com/henrytao-me/bintray/master/installv1.gradle"
-apply from: "https://raw.githubusercontent.com/henrytao-me/bintray/master/bintrayv1.gradle"
+apply from: '../bintray.gradle'

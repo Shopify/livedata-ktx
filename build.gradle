@@ -32,35 +32,36 @@ buildscript {
 
         android = [
                 compileSdkVersion: 27,
-                applicationId    : "me.henrytao.livedataktx",
+                applicationId    : 'com.shopify.livedataktx',
                 minSdkVersion    : 16,
                 targetSdkVersion : 27,
                 versionCode      : 1,
-                versionName      : "0.1.17"
+                versionName      : '0.2.0'
         ]
 
         bintray = [
-                bintrayRepo       : "maven",
-                bintrayName       : "livedata-ktx",
+                bintrayOrg        : 'shopify',
+                bintrayRepo       : 'shopify-android',
+                bintrayName       : 'livedata-ktx',
 
-                publishedGroupId  : "me.henrytao",
-                libraryName       : "LiveDataKtx",
-                artifact          : "livedata-ktx",
+                publishedGroupId  : 'com.shopify',
+                libraryName       : 'LiveDataKtx',
+                artifact          : 'livedata-ktx',
 
-                libraryDescription: "Kotlin extension for LiveData, chaining like RxJava",
+                libraryDescription: 'Kotlin extension for LiveData, chaining like RxJava',
 
-                siteUrl           : "https://github.com/henrytao-me/livedata-ktx",
-                gitUrl            : "https://github.com/henrytao-me/livedata-ktx",
+                siteUrl           : 'https://github.com/shopify/livedata-ktx',
+                gitUrl            : 'https://github.com/shopify/livedata-ktx',
 
                 libraryVersion    : rootProject.ext.android.versionName,
 
-                developerId       : "henrytao",
-                developerName     : "Henry Tao",
-                developerEmail    : "hi@henrytao.me",
+                developerId       : 'shopify',
+                developerName     : 'Shpoify',
+                developerEmail    : 'hi@henrytao.me',
 
-                licenseName       : "The Apache Software License, Version 2.0",
-                licenseUrl        : "http://www.apache.org/licenses/LICENSE-2.0.txt",
-                allLicenses       : ["Apache-2.0"]
+                licenseName       : 'MIT',
+                licenseUrl        : 'https://raw.githubusercontent.com/Shopify/livedata-ktx/master/LICENSE',
+                allLicenses       : ['MIT']
         ]
     }
     repositories {
@@ -68,14 +69,11 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.2'
+        classpath 'com.android.tools.build:gradle:3.1.3'
         classpath "org.jetbrains.dokka:dokka-gradle-plugin:$dokka_version"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.0'
-
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
     }
 }
 

@@ -1,7 +1,7 @@
 ### NOTICE: TRANSFERRING OWNERSHIP IS IN PROGRESS
 
-[![GitHub license](https://img.shields.io/badge/license-MIT-lightgrey.svg?maxAge=2592000)](https://raw.githubusercontent.com/henrytao-me/livedata-ktx/master/LICENSE)
-[ ![Download](https://api.bintray.com/packages/henrytao-me/maven/livedata-ktx/images/download.svg) ](https://bintray.com/henrytao-me/maven/livedata-ktx/_latestVersion)
+[![GitHub license](https://img.shields.io/badge/license-MIT-lightgrey.svg?maxAge=2592000)](https://raw.githubusercontent.com/shopify/livedata-ktx/master/LICENSE)
+[ ![Download](https://api.bintray.com/packages/shopify/shopify-android/livedata-ktx/images/download.svg) ](https://bintray.com/shopify/shopify-android/livedata-ktx/_latestVersion)
 
 # livedata-ktx
 Kotlin extension for LiveData, chaining like RxJava
@@ -12,7 +12,7 @@ Kotlin extension for LiveData, chaining like RxJava
 To add LiveData KTX to your project, add the following to your app module's build.gradle:
 
 ```groovy
-implementation "me.henrytao:livedata-ktx:VERSION"
+implementation "com.shopify:livedata-ktx:VERSION"
 ```
 
 *(See latest version on top of README)*
@@ -69,7 +69,7 @@ val expecteds = mutableListOf(2, 3)
 assertEquals(expecteds, actuals)
 ```
 
-For more use cases, please see the tests at [LiveDataTest.kt](https://github.com/henrytao-me/livedata-ktx/blob/master/livedata-ktx/src/test/java/me/henrytao/livedataktx/LiveDataTest.kt)
+For more use cases, please see the tests at [LiveDataTest.kt](https://github.com/shopify/livedata-ktx/blob/master/livedata-ktx/src/test/java/com/shopify/livedataktx/LiveDataTest.kt)
 
 
 # Feel missing methods
@@ -80,7 +80,7 @@ Please suggest what you need by creating issues. I will support it as fast as I 
 # Contributing
 
 Any contributions are welcome!  
-Please check the [CONTRIBUTING](CONTRIBUTING.md) guideline before submitting a new issue. Wanna send PR? [Click HERE](https://github.com/henrytao-me/livedata-ktx/pulls)
+Please check the [CONTRIBUTING](CONTRIBUTING.md) guideline before submitting a new issue. Wanna send PR? [Click HERE](https://github.com/shopify/livedata-ktx/pulls)
 
 
 # License

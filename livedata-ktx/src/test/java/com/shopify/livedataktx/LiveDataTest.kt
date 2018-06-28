@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package me.henrytao.livedataktx
+package com.shopify.livedataktx
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule
 import android.arch.lifecycle.Lifecycle
