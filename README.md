@@ -83,9 +83,10 @@ Please check the [CONTRIBUTING](CONTRIBUTING.md) guideline before submitting a n
 
 # Maintainers
 
+- Francisco Cavedon <[francisco.cavedon@shopify.com](mailto:francisco.cavedon@shopify.com)>
 - Henry Tao <[henry.tao@shopify.com](mailto:henry.tao@shopify.com)>
 - Ivan Savytskyi <[ivan.savytskyi@shopify.com](mailto:ivan.savytskyi@shopify.com)>
-- Francisco Cavedon <[francisco.cavedon@shopify.com](mailto:francisco.cavedon@shopify.com)>
+- Kris Orr <[kris.orr@shopify.com](mailto:kris.orr@shopify.com)>
 
 
 # License
