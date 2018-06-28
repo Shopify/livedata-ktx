@@ -1,3 +1,8 @@
+language: android
+android:
+  components:
+    - android-27
+
 jdk:
   - oraclejdk8
 
@@ -16,11 +21,3 @@ notifications:
   email: false
 
 sudo: false
-
-before_cache:
-    - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
-
-cache:
-  directories:
-    - ${TRAVIS_BUILD_DIR}/gradle/caches/
-    - ${TRAVIS_BUILD_DIR}/gradle/wrapper/dists/
