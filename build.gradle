@@ -57,7 +57,7 @@ buildscript {
 
                 developerId       : 'shopify',
                 developerName     : 'Shpoify',
-                developerEmail    : 'hi@henrytao.me',
+                developerEmail    : 'henry.tao@shopify.com',
 
                 licenseName       : 'MIT',
                 licenseUrl        : 'https://raw.githubusercontent.com/Shopify/livedata-ktx/master/LICENSE',
