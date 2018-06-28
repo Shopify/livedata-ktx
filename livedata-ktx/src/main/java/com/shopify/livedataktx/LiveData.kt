@@ -111,6 +111,19 @@ fun <T, R> SupportMediatorLiveData<T>.map(mapper: (T) -> R): SupportMediatorLive
 }))
 
 /**
+ * combineWith
+ */
+private class CombineWith<T, R, S>(private val mapper: (T?, R?)-> S?): CombinedMediatorObserver<T, R, S> {
+
+    override fun run(firstSource: LiveData<T>, secondSource: LiveData<R>, mediator: SupportMediatorLiveData<S>) {
+        mediator.value = mapper(firstSource.value, secondSource.value)
+    }
+}
+
+fun <T, R, S> LiveData<T>.combineWith(other: LiveData<R>, mapper: (T?, R?) -> S?): LiveData<S> = createCombinedMediator(this, other, CombineWith<T, R, S>(mapper))
+fun <T, R, S> SupportMediatorLiveData<T>.combineWith(other: LiveData<R>, mapper: (T?, R?) -> S?): SupportMediatorLiveData<S> = createCombinedMediator(this, other, CombineWith<T, R, S>(mapper))
+
+/**
  * nonNull
  */
 fun <T> LiveData<T>.nonNull(): SupportMediatorLiveData<T> = createMediator(this, object : MediatorObserver<T, T> {
@@ -156,6 +169,12 @@ private interface MediatorObserver<IN, OUT> {
     fun run(source: LiveData<IN>, mediator: SupportMediatorLiveData<OUT>, value: IN?)
 }
 
+private interface CombinedMediatorObserver<FIRST, SECOND, OUT> {
+
+    fun run(firstSource: LiveData<FIRST>, secondSource: LiveData<SECOND>, mediator: SupportMediatorLiveData<OUT>)
+
+}
+
 private fun <IN, OUT> createMediator(source: LiveData<IN>, observer: MediatorObserver<IN, OUT>): SupportMediatorLiveData<OUT> {
     var isSingle = false
     var versionProvider: (() -> Int)? = null
@@ -166,6 +185,13 @@ private fun <IN, OUT> createMediator(source: LiveData<IN>, observer: MediatorObs
     val mediator: SupportMediatorLiveData<OUT> = SupportMediatorLiveData(isSingle, versionProvider)
     mediator.addSource(source, Observer { observer.run(source, mediator, it) })
     return mediator
+}
+
+private fun <FIRST, SECOND, OUT> createCombinedMediator(firstSource: LiveData<FIRST>, secondSource: LiveData<SECOND>, observer:CombinedMediatorObserver<FIRST, SECOND, OUT>): SupportMediatorLiveData<OUT> {
+    return SupportMediatorLiveData<OUT>(false).apply {
+        addSource(firstSource, { observer.run(firstSource, secondSource, this)})
+        addSource(secondSource, { observer.run(firstSource, secondSource, this)})
+    }
 }
 
 private class RemovableImpl<T>(private val liveData: LiveData<T>, val observer: Observer<T>) : Removable {
