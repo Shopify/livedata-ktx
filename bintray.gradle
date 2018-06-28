@@ -96,8 +96,14 @@ artifacts {
     archives sourcesJar
 }
 
-Properties properties = new Properties()
-properties.load(project.rootProject.file("local.properties").newDataInputStream())
+def localProperties() {
+    Properties properties = new Properties()
+    if (rootProject.file('local.properties').canRead()) {
+        properties.load(rootProject.file('local.properties').newDataInputStream())
+    }
+    return properties
+}
+Properties properties = localProperties()
 
 version = rootProject.ext.bintray.libraryVersion
 
