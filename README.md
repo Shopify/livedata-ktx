@@ -82,6 +82,11 @@ Please suggest what you need by creating issues. I will support it as fast as I 
 Any contributions are welcome!  
 Please check the [CONTRIBUTING](CONTRIBUTING.md) guideline before submitting a new issue. Wanna send PR? [Click HERE](https://github.com/shopify/livedata-ktx/pulls)
 
+# Maintainers
+
+- Henry Tao <[henry.tao@shopify.com](henry.tao@shopify.com)>
+- Ivan Savytskyi <[ivan.savytskyi@shopify.com](ivan.savytskyi@shopify.com)>
+
 
 # License
 

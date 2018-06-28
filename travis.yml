@@ -1,0 +1,26 @@
+jdk:
+  - oraclejdk8
+
+script:
+  - ./gradlew clean check lint test
+
+env:
+  global:
+    - GRADLE_OPTS="-Xmx2048m -XX:MaxPermSize=1024m"
+
+branches:
+  except:
+    - gh-pages
+
+notifications:
+  email: false
+
+sudo: false
+
+before_cache:
+    - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
+
+cache:
+  directories:
+    - ${TRAVIS_BUILD_DIR}/gradle/caches/
+    - ${TRAVIS_BUILD_DIR}/gradle/wrapper/dists/
