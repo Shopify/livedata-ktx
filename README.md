@@ -1,5 +1,3 @@
-### NOTICE: TRANSFERRING OWNERSHIP IS IN PROGRESS
-
 [![GitHub license](https://img.shields.io/badge/license-MIT-lightgrey.svg?maxAge=2592000)](https://raw.githubusercontent.com/shopify/livedata-ktx/master/LICENSE)
 [ ![Download](https://api.bintray.com/packages/shopify/shopify-android/livedata-ktx/images/download.svg) ](https://bintray.com/shopify/shopify-android/livedata-ktx/_latestVersion)
 [![Build Status](https://travis-ci.org/Shopify/livedata-ktx.svg?branch=master)](https://travis-ci.org/Shopify/livedata-ktx)
