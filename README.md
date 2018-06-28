@@ -85,6 +85,7 @@ Please check the [CONTRIBUTING](CONTRIBUTING.md) guideline before submitting a n
 
 - Henry Tao <[henry.tao@shopify.com](mailto:henry.tao@shopify.com)>
 - Ivan Savytskyi <[ivan.savytskyi@shopify.com](mailto:ivan.savytskyi@shopify.com)>
+- Francisco Cavedon <[francisco.cavedon@shopify.com](mailto:francisco.cavedon@shopify.com)>
 
 
 # License
