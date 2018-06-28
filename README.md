@@ -83,8 +83,8 @@ Please check the [CONTRIBUTING](CONTRIBUTING.md) guideline before submitting a n
 
 # Maintainers
 
-- Henry Tao <[henry.tao@shopify.com](henry.tao@shopify.com)>
-- Ivan Savytskyi <[ivan.savytskyi@shopify.com](ivan.savytskyi@shopify.com)>
+- Henry Tao <[henry.tao@shopify.com](mailto:henry.tao@shopify.com)>
+- Ivan Savytskyi <[ivan.savytskyi@shopify.com](mailto:ivan.savytskyi@shopify.com)>
 
 
 # License
