@@ -98,11 +98,13 @@ artifacts {
 
 def localProperties() {
     Properties properties = new Properties()
-    if (rootProject.file('local.properties').canRead()) {
-        properties.load(rootProject.file('local.properties').newDataInputStream())
+    File localFile = project.rootProject.file('local.properties')
+    if (localFile.exists()) {
+        properties.load(localFile.newDataInputStream())
     }
     return properties
 }
+
 Properties properties = localProperties()
 
 version = rootProject.ext.bintray.libraryVersion
