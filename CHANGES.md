@@ -1,5 +1,7 @@
 # livedata-ktx #
 
+Move to https://github.com/Shopify/livedata-ktx/releases
+
 ### Transferring ownership – 06/27/2018 ###
 
 - Prepare to transfer ownership to Shopify
