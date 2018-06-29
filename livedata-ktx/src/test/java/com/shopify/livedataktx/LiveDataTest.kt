@@ -221,18 +221,36 @@ class LiveDataTest : LifecycleOwner {
     fun combineWith() {
         val firstSource = MutableLiveData<Int>()
         val secondSource = MutableLiveData<String>()
-        val actual = mutableListOf<Long?>()
-        val observer: (t: Long?) -> Unit = { actual.add(it) }
-
-        val expectedValue: Long = 3
+        val actuals = mutableListOf<Int?>()
+        val observer: (t: Int?) -> Unit = { actuals.add(it) }
 
         firstSource.value = 1
         secondSource.value = "2"
 
         firstSource
-            .combineWith(secondSource) {i: Int?, s: String? -> (i!!+s!!.toInt()).toLong() }
-            .observe(this, observer)
+                .combineWith(secondSource) { i, s -> i!! + s!!.toInt() }
+                .observe(this, observer)
 
-        assertEquals(expectedValue, actual.first())
+        observer(1)
+
+        firstSource
+                .nonNull()
+                .combineWith(secondSource) { i, s -> i + s!!.toInt() }
+                .observe(this, observer)
+
+        observer(1)
+
+        firstSource
+                .combineWith(secondSource.nonNull()) { i, s -> i!! + s.toInt() }
+                .observe(this, observer)
+
+        observer(1)
+
+        firstSource
+                .nonNull()
+                .combineWith(secondSource.nonNull()) { i, s -> i + s.toInt() }
+                .observe(this, observer)
+
+        assertEquals(mutableListOf(3, 3, 1, 3, 3, 1, 3, 1, 3), actuals)
     }
 }

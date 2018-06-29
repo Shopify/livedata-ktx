@@ -30,6 +30,46 @@ import android.arch.lifecycle.Observer
 import android.os.Handler
 
 /**
+ * combineWith
+ */
+private class CombineWith<T, R, S>(private val mapper: (T?, R?) -> S?) : CombinedMediatorObserver<T, R, S> {
+
+    override fun run(firstSource: LiveData<T>, secondSource: LiveData<R>, mediator: SupportMediatorLiveData<S>) {
+        try {
+            mediator.value = mapper(firstSource.value, secondSource.value)
+        } catch (_: NotCombinableException) {
+        }
+    }
+}
+
+fun <T, R, S> LiveData<T>.combineWith(other: LiveData<R>, mapper: (T?, R?) -> S?): LiveData<S> =
+        createCombinedMediator(this, other, CombineWith<T, R, S>(mapper))
+
+fun <T, R, S> LiveData<T>.combineWith(other: SupportMediatorLiveData<R>, mapper: (T?, R) -> S?): LiveData<S> =
+        createCombinedMediator(this, other, CombineWith<T, R, S>({ t, r ->
+            if (r == null) {
+                throw NotCombinableException()
+            }
+            mapper(t, r)
+        }))
+
+fun <T, R, S> SupportMediatorLiveData<T>.combineWith(other: LiveData<R>, mapper: (T, R?) -> S?): LiveData<S> =
+        createCombinedMediator(this, other, CombineWith<T, R, S>({ t, r ->
+            if (t == null) {
+                throw NotCombinableException()
+            }
+            mapper(t, r)
+        }))
+
+fun <T, R, S> SupportMediatorLiveData<T>.combineWith(other: SupportMediatorLiveData<R>, mapper: (T, R) -> S?): LiveData<S> =
+        createCombinedMediator(this, other, CombineWith<T, R, S>({ t, r ->
+            if (t == null || r == null) {
+                throw NotCombinableException()
+            }
+            mapper(t, r)
+        }))
+
+/**
  * debounce
  */
 private class DebounceExt<T>(private val delayMillis: Long) : MediatorObserver<T, T> {
@@ -111,19 +151,6 @@ fun <T, R> SupportMediatorLiveData<T>.map(mapper: (T) -> R): SupportMediatorLive
 }))
 
 /**
- * combineWith
- */
-private class CombineWith<T, R, S>(private val mapper: (T?, R?)-> S?): CombinedMediatorObserver<T, R, S> {
-
-    override fun run(firstSource: LiveData<T>, secondSource: LiveData<R>, mediator: SupportMediatorLiveData<S>) {
-        mediator.value = mapper(firstSource.value, secondSource.value)
-    }
-}
-
-fun <T, R, S> LiveData<T>.combineWith(other: LiveData<R>, mapper: (T?, R?) -> S?): LiveData<S> = createCombinedMediator(this, other, CombineWith<T, R, S>(mapper))
-fun <T, R, S> SupportMediatorLiveData<T>.combineWith(other: LiveData<R>, mapper: (T?, R?) -> S?): SupportMediatorLiveData<S> = createCombinedMediator(this, other, CombineWith<T, R, S>(mapper))
-
-/**
  * nonNull
  */
 fun <T> LiveData<T>.nonNull(): SupportMediatorLiveData<T> = createMediator(this, object : MediatorObserver<T, T> {
@@ -164,6 +191,8 @@ fun <T> SupportMediatorLiveData<T>.observe(observer: (t: T) -> Unit): Removable 
 /**
  * Supporting classes
  */
+private class NotCombinableException : Exception()
+
 private interface MediatorObserver<IN, OUT> {
 
     fun run(source: LiveData<IN>, mediator: SupportMediatorLiveData<OUT>, value: IN?)
@@ -172,7 +201,6 @@ private interface MediatorObserver<IN, OUT> {
 private interface CombinedMediatorObserver<FIRST, SECOND, OUT> {
 
     fun run(firstSource: LiveData<FIRST>, secondSource: LiveData<SECOND>, mediator: SupportMediatorLiveData<OUT>)
-
 }
 
 private fun <IN, OUT> createMediator(source: LiveData<IN>, observer: MediatorObserver<IN, OUT>): SupportMediatorLiveData<OUT> {
@@ -187,10 +215,10 @@ private fun <IN, OUT> createMediator(source: LiveData<IN>, observer: MediatorObs
     return mediator
 }
 
-private fun <FIRST, SECOND, OUT> createCombinedMediator(firstSource: LiveData<FIRST>, secondSource: LiveData<SECOND>, observer:CombinedMediatorObserver<FIRST, SECOND, OUT>): SupportMediatorLiveData<OUT> {
+private fun <FIRST, SECOND, OUT> createCombinedMediator(firstSource: LiveData<FIRST>, secondSource: LiveData<SECOND>, observer: CombinedMediatorObserver<FIRST, SECOND, OUT>): SupportMediatorLiveData<OUT> {
     return SupportMediatorLiveData<OUT>(false).apply {
-        addSource(firstSource, { observer.run(firstSource, secondSource, this)})
-        addSource(secondSource, { observer.run(firstSource, secondSource, this)})
+        addSource(firstSource, { observer.run(firstSource, secondSource, this) })
+        addSource(secondSource, { observer.run(firstSource, secondSource, this) })
     }
 }
 
