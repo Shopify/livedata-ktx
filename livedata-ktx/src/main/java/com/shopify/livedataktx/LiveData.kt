@@ -217,7 +217,14 @@ private fun <IN, OUT> createMediator(source: LiveData<IN>, observer: MediatorObs
 
 private fun <FIRST, SECOND, OUT> createCombinedMediator(firstSource: LiveData<FIRST>, secondSource: LiveData<SECOND>, observer: CombinedMediatorObserver<FIRST, SECOND, OUT>): SupportMediatorLiveData<OUT> {
     return SupportMediatorLiveData<OUT>(false).apply {
-        addSource(firstSource, { observer.run(firstSource, secondSource, this) })
+        var deferred = false
+        addSource(firstSource, {
+            if (!deferred) {
+                deferred = true
+            } else {
+                observer.run(firstSource, secondSource, this)
+            }
+        })
         addSource(secondSource, { observer.run(firstSource, secondSource, this) })
     }
 }

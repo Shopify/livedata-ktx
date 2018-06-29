@@ -251,6 +251,6 @@ class LiveDataTest : LifecycleOwner {
                 .combineWith(secondSource.nonNull()) { i, s -> i + s.toInt() }
                 .observe(this, observer)
 
-        assertEquals(mutableListOf(3, 3, 1, 3, 3, 1, 3, 1, 3), actuals)
+        assertEquals(mutableListOf(3, 1, 3, 1, 3, 1, 3), actuals)
     }
 }
