@@ -24,9 +24,9 @@
 
 package com.shopify.livedataktx
 
-import android.arch.lifecycle.LifecycleOwner
-import android.arch.lifecycle.MediatorLiveData
-import android.arch.lifecycle.Observer
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.Observer
 
 open class SupportMediatorLiveData<T>(internal val isSingle: Boolean = false, private val versionProvider: (() -> Int)? = null) : MediatorLiveData<T>() {
 
@@ -34,7 +34,7 @@ open class SupportMediatorLiveData<T>(internal val isSingle: Boolean = false, pr
     internal val version: Int get() = versionProvider?.let { it() } ?: _version
 
     @Deprecated("Use observe extension")
-    override fun observe(owner: LifecycleOwner, observer: Observer<T>) {
+    override fun observe(owner: LifecycleOwner, observer: Observer<in T>) {
         val observerVersion = version
         super.observe(owner, Observer {
             if (!isSingle || observerVersion < version) {
@@ -44,7 +44,7 @@ open class SupportMediatorLiveData<T>(internal val isSingle: Boolean = false, pr
     }
 
     @Deprecated("Use observe extension without LifecycleOwner")
-    override fun observeForever(observer: Observer<T>) {
+    override fun observeForever(observer: Observer<in T>) {
         super.observeForever(observer)
     }
 
