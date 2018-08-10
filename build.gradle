@@ -25,44 +25,43 @@
 buildscript {
     ext {
         androidx = '2.0.0'
-        appcompat_version = '27.1.1'
+        appcompat_version = '28.0.0'
         arch_version = '1.1.1'
-        dokka_version = '0.9.16'
         junit_version = '4.12'
-        kotlin_version = '1.2.41'
+        kotlin_version = '1.2.61'
 
         android = [
-                compileSdkVersion: 27,
-                applicationId    : 'com.shopify.livedataktx',
-                minSdkVersion    : 16,
-                targetSdkVersion : 27,
-                versionCode      : 1,
-                versionName      : '2.0.2'
+            compileSdkVersion: 28,
+            applicationId    : 'com.shopify.livedataktx',
+            minSdkVersion    : 16,
+            targetSdkVersion : 28,
+            versionCode      : 1,
+            versionName      : '2.0.2'
         ]
 
         bintray = [
-                bintrayOrg        : 'shopify',
-                bintrayRepo       : 'shopify-android',
-                bintrayName       : 'livedata-ktx',
+            bintrayOrg        : 'shopify',
+            bintrayRepo       : 'shopify-android',
+            bintrayName       : 'livedata-ktx',
 
-                publishedGroupId  : 'com.shopify',
-                libraryName       : 'LiveDataKtx',
-                artifact          : 'livedata-ktx',
+            publishedGroupId  : 'com.shopify',
+            libraryName       : 'LiveDataKtx',
+            artifact          : 'livedata-ktx',
 
-                libraryDescription: 'Kotlin extension for LiveData, chaining like RxJava',
+            libraryDescription: 'Kotlin extension for LiveData, chaining like RxJava',
 
-                siteUrl           : 'https://github.com/shopify/livedata-ktx',
-                gitUrl            : 'https://github.com/shopify/livedata-ktx',
+            siteUrl           : 'https://github.com/shopify/livedata-ktx',
+            gitUrl            : 'https://github.com/shopify/livedata-ktx',
 
-                libraryVersion    : rootProject.ext.android.versionName,
+            libraryVersion    : rootProject.ext.android.versionName,
 
-                developerId       : 'shopify',
-                developerName     : 'Shpoify',
-                developerEmail    : 'henry.tao@shopify.com',
+            developerId       : 'shopify',
+            developerName     : 'Shpoify',
+            developerEmail    : 'henry.tao@shopify.com',
 
-                licenseName       : 'MIT',
-                licenseUrl        : 'https://raw.githubusercontent.com/Shopify/livedata-ktx/master/LICENSE',
-                allLicenses       : ['MIT']
+            licenseName       : 'MIT',
+            licenseUrl        : 'https://raw.githubusercontent.com/Shopify/livedata-ktx/master/LICENSE',
+            allLicenses       : ['MIT']
         ]
     }
     repositories {
@@ -70,8 +69,8 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.4'
-        classpath "org.jetbrains.dokka:dokka-gradle-plugin:$dokka_version"
+        classpath 'com.android.tools.build:gradle:3.2.1'
+        classpath "org.jetbrains.dokka:dokka-gradle-plugin:0.9.16"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.0'

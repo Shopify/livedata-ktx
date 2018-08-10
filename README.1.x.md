@@ -3,10 +3,8 @@
 [![Build Status](https://travis-ci.org/Shopify/livedata-ktx.svg?branch=master)](https://travis-ci.org/Shopify/livedata-ktx)
 
 # livedata-ktx
-
 Kotlin extension for LiveData, chaining like RxJava
 
-###### [README For 1.x](https://github.com/Shopify/livedata-ktx/blob/master/README.1.x.mdx)
 
 # Getting Started
 
@@ -19,13 +17,16 @@ implementation "com.shopify:livedata-ktx:VERSION"
 #### For `android.arch.lifecycle:livedata:1.x`, please use `com.shopify:livedata-ktx:1.x`
 #### For `androidx.lifecycle:livedata:2.x`, please use `com.shopify:livedata-ktx:2.x`
 
+*(Check https://github.com/Shopify/livedata-ktx/releases for more information)*
+
+
 # Usage
 
 
 ### Chaining LiveData
 
 ```kotlin
-val liveData = MutableLiveData<Boolean>()
+val liveData: MutableLiveData<Boolean> = MutableLiveData()
 liveData
   .distinct()
   .filter { it == false }
@@ -36,44 +37,6 @@ liveData
   })
 ```
 
-### Observe with lifecycle
-
-```kotlin
-val liveData = MutableLiveData<Boolean>()
-liveData
-  .distinct()
-  .observe(lifecycleOwner, {
-    // TODO
-  })
-```
-
-### Observe forever
-
-```kotlin
-val liveData = MutableLiveData<Boolean>()
-liveData
-  .distinct()
-  .observe({
-    // TODO
-  })
-```
-
-### Preserve immutability
-
-```kotlin
-val mutableLiveData = MutableLiveData<Boolean>()
-val liveData: LiveData<Boolean> = mutableLiveData.distinct()
-// liveData.value is invalid
-
-val singleLiveData = SingleLiveData<Boolean>()
-val nonNullLiveData: NonNullLiveData<Boolean> = singleLiveData
-// nonNullLiveData.value is invalid
-
-val nonNullMutableLiveData = MutableLiveData<Boolean>()
-val otherNonNullLiveData: NonNullLiveData<Boolean> = nonNullMutableLiveData.nonNull()
-// otherNonNullLiveData is invalid
-```
-
 ### Remove observer
 
 Because the input observer goes through a wrapper before it observes to source LiveData. So that you can't simply remove it by just calling origin method `liveData.removeObserver`.
@@ -81,18 +44,13 @@ Because the input observer goes through a wrapper before it observes to source L
 The new observe method returns `Removable` interface that allows you to remove observer effectively.
 
 ```kotlin
-val liveData = MutableLiveData<Boolean>()
+val liveData: MutableLiveData<Boolean> = MutableLiveData()
 val removable = liveData
   .nonNull()
   .observe(lifecycleOwner, {
     // TODO
   })
 removable.removeObserver()
-
-val removableFromObserveForever = liveData.observe {
-  // TODO
-}
-removableFromObserveForever.removeObserver()
 ```
 
 ### SingleLiveData
@@ -100,9 +58,9 @@ removableFromObserveForever.removeObserver()
 It is a lifecycle-aware observable that sends only new updates after subscription, used for events like navigation and Snackbar messages. `livedata-ktx` has different implementation comparing to SingleLiveEvent from [google samples android-architecture](https://github.com/googlesamples/android-architecture/blob/dev-todo-mvvm-live/todoapp/app/src/main/java/com/example/android/architecture/blueprints/todoapp/SingleLiveEvent.java).
 
 ```kotlin
-val liveData = SingleLiveData<Int>()
+val liveData: MutableLiveData<Int> = SingleLiveData()
 val actuals: MutableList<Int?> = mutableListOf()
-val observer: (t: Int) -> Unit = { actuals.add(it) }
+val observer: (t: Int?) -> Unit = { actuals.add(it) }
 
 liveData.value = 1
 liveData.observe(this, observer)
@@ -118,30 +76,12 @@ For more use cases, please see the tests at [LiveDataTest.kt](https://github.com
 
 # Feel missing methods
 
-It is easy to add your custom extension without requiring to send a PR. For example:
-
-```kotlin
-/**
- * filter
- */
-internal class FilterExt<T>(private val predicate: (T?) -> Boolean) : Operator<T, T> {
-
-    override fun run(value: T?, source: LiveData<T>, onResult: OnResult<T>) {
-        val predicated = predicate(value)
-        onResult(Result(value, !predicated))
-    }
-}
-
-fun <T> LiveData<T>.filter(predicate: (T?) -> Boolean): LiveData<T> = SupportLiveData(this, FilterExt<T>(predicate))
-fun <T> NonNullLiveData<T>.filter(predicate: (T) -> Boolean): NonNullLiveData<T> = SupportNonNullLiveData(this, FilterExt {
-    predicate(it!!)
-})
-```
+Please suggest what you need by creating issues. I will support it as fast as I can.
 
 
 # Contributing
 
-Any contributions are welcome!
+Any contributions are welcome!  
 Please check the [CONTRIBUTING](CONTRIBUTING.md) guideline before submitting a new issue. Wanna send PR? [Click HERE](https://github.com/shopify/livedata-ktx/pulls)
 
 # Maintainers
