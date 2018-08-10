@@ -14,7 +14,10 @@ To add LiveData KTX to your project, add the following to your app module's buil
 implementation "com.shopify:livedata-ktx:VERSION"
 ```
 
-*(See latest version on top of README)*
+#### For `android.arch.lifecycle:livedata:1.x`, please use `com.shopify:livedata-ktx:1.x`
+#### For `androidx.lifecycle:livedata:2.x`, please use `com.shopify:livedata-ktx:2.x`
+
+*(Check https://github.com/Shopify/livedata-ktx/releases for more information)*
 
 
 # Usage
