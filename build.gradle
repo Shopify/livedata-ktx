@@ -24,6 +24,7 @@
 
 buildscript {
     ext {
+        androidx = '2.0.0-rc01'
         appcompat_version = '27.1.1'
         arch_version = '1.1.1'
         dokka_version = '0.9.16'
@@ -36,7 +37,7 @@ buildscript {
                 minSdkVersion    : 16,
                 targetSdkVersion : 27,
                 versionCode      : 1,
-                versionName      : '1.0.1'
+                versionName      : '2.0.0'
         ]
 
         bintray = [
@@ -69,10 +70,10 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.3'
+        classpath 'com.android.tools.build:gradle:3.1.4'
         classpath "org.jetbrains.dokka:dokka-gradle-plugin:$dokka_version"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.0'
     }
 }
