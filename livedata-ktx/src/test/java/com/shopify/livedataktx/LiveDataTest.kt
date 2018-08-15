@@ -255,7 +255,7 @@ class LiveDataTest : LifecycleOwner {
     }
 
     @Test
-    fun removeObserver(){
+    fun removeObserver() {
         val liveData: MutableLiveData<Boolean> = MutableLiveData()
         val actuals: MutableList<Boolean?> = mutableListOf()
         val observer: (t: Boolean?) -> Unit = { actuals.add(it) }

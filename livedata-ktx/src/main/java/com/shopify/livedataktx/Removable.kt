@@ -24,8 +24,8 @@
 
 package com.shopify.livedataktx
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.Observer
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 
 class Removable<T>(
         private val liveData: LiveData<T>,
