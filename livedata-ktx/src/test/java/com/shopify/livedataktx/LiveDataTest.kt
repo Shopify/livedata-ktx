@@ -253,4 +253,21 @@ class LiveDataTest : LifecycleOwner {
 
         assertEquals(mutableListOf(3, 1, 3, 1, 3, 1, 3), actuals)
     }
+
+    @Test
+    fun removeObserver(){
+        val liveData: MutableLiveData<Boolean> = MutableLiveData()
+        val actuals: MutableList<Boolean?> = mutableListOf()
+        val observer: (t: Boolean?) -> Unit = { actuals.add(it) }
+        val removable = liveData
+                .observe(this, observer)
+
+        liveData.value = true
+        liveData.value = false
+        removable.removeObserver()
+        liveData.value = true
+
+        val expecteds = mutableListOf(true, false)
+        assertEquals(expecteds, actuals)
+    }
 }
