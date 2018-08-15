@@ -162,28 +162,28 @@ fun <T> LiveData<T>.nonNull(): SupportMediatorLiveData<T> = createMediator(this,
 /**
  * observers
  */
-fun <T> LiveData<T>.observe(owner: LifecycleOwner, observer: (t: T?) -> Unit): Removable {
-    val removable: RemovableImpl<T> = RemovableImpl(this, Observer { observer(it) })
+inline fun <T> LiveData<T>.observe(owner: LifecycleOwner, crossinline observer: (t: T?) -> Unit): Removable<T> {
+    val removable: Removable<T> = Removable(this, Observer { observer(it) })
     observe(owner, removable.observer)
     return removable
 }
 
-fun <T> LiveData<T>.observe(observer: (t: T?) -> Unit): Removable {
-    val removable: RemovableImpl<T> = RemovableImpl(this, Observer { observer(it) })
+inline fun <T> LiveData<T>.observe(crossinline observer: (t: T?) -> Unit): Removable<T> {
+    val removable: Removable<T> = Removable(this, Observer { observer(it) })
     observeForever(removable.observer)
     return removable
 }
 
 @Suppress("DEPRECATION")
-fun <T> SupportMediatorLiveData<T>.observe(owner: LifecycleOwner, observer: (t: T) -> Unit): Removable {
-    val removable: RemovableImpl<T> = RemovableImpl(this, Observer { it?.let(observer) })
+inline fun <T> SupportMediatorLiveData<T>.observe(owner: LifecycleOwner, crossinline observer: (t: T) -> Unit): Removable<T> {
+    val removable: Removable<T> = Removable(this, Observer { it?.let(observer) })
     observe(owner, removable.observer)
     return removable
 }
 
 @Suppress("DEPRECATION")
-fun <T> SupportMediatorLiveData<T>.observe(observer: (t: T) -> Unit): Removable {
-    val removable: RemovableImpl<T> = RemovableImpl(this, Observer { it?.let { observer(it) } })
+inline fun <T> SupportMediatorLiveData<T>.observe(crossinline observer: (t: T) -> Unit): Removable<T> {
+    val removable: Removable<T> = Removable(this, Observer { it?.let { observer(it) } })
     observeForever(removable.observer)
     return removable
 }
@@ -229,9 +229,3 @@ private fun <FIRST, SECOND, OUT> createCombinedMediator(firstSource: LiveData<FI
     }
 }
 
-private class RemovableImpl<T>(private val liveData: LiveData<T>, val observer: Observer<T>) : Removable {
-
-    override fun removeObserver() {
-        liveData.removeObserver(observer)
-    }
-}
