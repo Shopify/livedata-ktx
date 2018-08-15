@@ -24,7 +24,14 @@
 
 package com.shopify.livedataktx
 
-interface Removable {
+import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.Observer
 
-    fun removeObserver()
+class Removable<T>(
+        private val liveData: LiveData<T>,
+        val observer: Observer<T>
+) {
+    fun removeObserver() {
+        liveData.removeObserver(observer)
+    }
 }
