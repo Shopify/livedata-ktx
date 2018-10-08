@@ -98,6 +98,31 @@ class LiveDataTest : LifecycleOwner {
     }
 
     @Test
+    fun ofType() {
+        open class A {
+            override fun equals(other: Any?) = javaClass.name == other?.javaClass?.name
+        }
+
+        class B : A()
+        class C : A()
+
+        val liveData: MutableLiveData<A> = MutableLiveData()
+        val actuals: MutableList<A?> = mutableListOf()
+        val observer: (t: A?) -> Unit = { actuals.add(it) }
+        liveData
+                .ofType(B::class.java)
+                .observe(this, observer)
+
+        liveData.value = A()
+        liveData.value = B()
+        liveData.value = C()
+        liveData.value = B()
+
+        val expecteds = mutableListOf(B(), B())
+        assertEquals(expecteds, actuals)
+    }
+
+    @Test
     fun first() {
         val liveData: MutableLiveData<Boolean> = MutableLiveData()
         val actuals: MutableList<Boolean?> = mutableListOf()

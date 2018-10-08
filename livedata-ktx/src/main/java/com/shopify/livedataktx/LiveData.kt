@@ -122,6 +122,21 @@ fun <T> SupportMediatorLiveData<T>.filter(predicate: (T) -> Boolean): SupportMed
 }))
 
 /**
+ * ofType
+ */
+private class OfTypeExt<T, R>(private val clazz: Class<R>) : MediatorObserver<T, R> {
+
+    override fun run(source: LiveData<T>, mediator: SupportMediatorLiveData<R>, value: T?) {
+        if (clazz.isInstance(value)) {
+            @Suppress("UNCHECKED_CAST")
+            mediator.value = value as R
+        }
+    }
+}
+
+fun <T, R> LiveData<T>.ofType(clazz: Class<R>): LiveData<R> = createMediator(this, OfTypeExt(clazz))
+
+/**
  * first
  */
 private class FirstExt<T> : MediatorObserver<T, T> {
