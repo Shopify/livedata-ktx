@@ -27,29 +27,33 @@ package com.shopify.livedataktx
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Observer
+import java.lang.ref.WeakReference
 
 open class SupportMediatorLiveData<T>(internal val isSingle: Boolean = false, private val versionProvider: (() -> Int)? = null) : MediatorLiveData<T>() {
 
     private var _version = 0
     internal val version: Int get() = versionProvider?.let { it() } ?: _version
 
-    @Deprecated("Use observe extension")
+    private val observerList = mutableListOf<Pair<WeakReference<Observer<in T>>, WeakReference<Observer<T>>>>()
+
     override fun observe(owner: LifecycleOwner, observer: Observer<in T>) {
         val observerVersion = version
-        super.observe(owner, Observer {
+        val wrapper = Observer<T> {
             if (!isSingle || observerVersion < version) {
                 observer.onChanged(it)
             }
-        })
-    }
-
-    @Deprecated("Use observe extension without LifecycleOwner")
-    override fun observeForever(observer: Observer<in T>) {
-        super.observeForever(observer)
+        }
+        observerList.add(Pair(WeakReference(observer), WeakReference(wrapper)))
+        super.observe(owner, wrapper)
     }
 
     override fun setValue(value: T?) {
         _version++
         super.setValue(value)
+    }
+
+    override fun removeObserver(observer: Observer<in T>) {
+        val target = observerList.find { it.first.get() == observer }?.second?.get() ?: observer
+        super.removeObserver(target)
     }
 }

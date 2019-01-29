@@ -1,4 +1,8 @@
 .DS_store
+.idea/*
+!.idea/checkstyle-idea.xml
+!.idea/copyright/profiles_settings.xml
+!.idea/copyright/Shopify.xml
 
 # Built application files
 *.apk
@@ -36,12 +40,6 @@ captures/
 
 # Intellij
 *.iml
-.idea/workspace.xml
-.idea/tasks.xml
-.idea/gradle.xml
-.idea/dictionaries
-.idea/libraries
-.idea/caches
 
 # Keystore files
 *.jks

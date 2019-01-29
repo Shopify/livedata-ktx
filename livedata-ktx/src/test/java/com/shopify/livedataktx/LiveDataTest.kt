@@ -270,4 +270,22 @@ class LiveDataTest : LifecycleOwner {
         val expecteds = mutableListOf(true, false)
         assertEquals(expecteds, actuals)
     }
+
+    @Test
+    fun single_reattach() {
+        val liveData = SingleLiveData<Int>()
+        val actuals = mutableListOf<Int?>()
+        val observer: (t: Int?) -> Unit = { actuals.add(it) }
+
+        val removable = liveData.observe(this, observer)
+        liveData.value = 1
+        removable.removeObserver()
+        actuals.clear()
+        liveData.value = 2
+        liveData.observe(this, observer)
+        liveData.value = 3
+
+        val expected = listOf(3)
+        assertEquals(expected, actuals)
+    }
 }
