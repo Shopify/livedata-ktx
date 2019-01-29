@@ -1,8 +1,13 @@
 .DS_store
-.idea/*
-!.idea/checkstyle-idea.xml
-!.idea/copyright/profiles_settings.xml
-!.idea/copyright/Shopify.xml
+.idea/caches
+.idea/libraries
+.idea/markdown-navigator
+.idea/gradle.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/runConfigurations.xml
+.idea/vcs.xml
+.idea/workspace.xml
 
 # Built application files
 *.apk
