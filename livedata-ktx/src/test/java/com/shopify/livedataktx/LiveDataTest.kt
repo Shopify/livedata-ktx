@@ -24,11 +24,11 @@
 
 package com.shopify.livedataktx
 
-import android.arch.core.executor.testing.InstantTaskExecutorRule
-import android.arch.lifecycle.Lifecycle
-import android.arch.lifecycle.LifecycleOwner
-import android.arch.lifecycle.LifecycleRegistry
-import android.arch.lifecycle.MutableLiveData
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LifecycleRegistry
+import androidx.lifecycle.MutableLiveData
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -255,7 +255,7 @@ class LiveDataTest : LifecycleOwner {
     }
 
     @Test
-    fun removeObserver(){
+    fun removeObserver() {
         val liveData: MutableLiveData<Boolean> = MutableLiveData()
         val actuals: MutableList<Boolean?> = mutableListOf()
         val observer: (t: Boolean?) -> Unit = { actuals.add(it) }
