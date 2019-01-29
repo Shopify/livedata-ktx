@@ -1,4 +1,13 @@
 .DS_store
+.idea/caches
+.idea/libraries
+.idea/markdown-navigator
+.idea/gradle.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/runConfigurations.xml
+.idea/vcs.xml
+.idea/workspace.xml
 
 # Built application files
 *.apk
@@ -36,12 +45,6 @@ captures/
 
 # Intellij
 *.iml
-.idea/workspace.xml
-.idea/tasks.xml
-.idea/gradle.xml
-.idea/dictionaries
-.idea/libraries
-.idea/caches
 
 # Keystore files
 *.jks
