@@ -24,7 +24,7 @@
 
 buildscript {
     ext {
-        androidx = '2.0.0-rc01'
+        androidx = '2.0.0'
         appcompat_version = '27.1.1'
         arch_version = '1.1.1'
         dokka_version = '0.9.16'
@@ -37,7 +37,7 @@ buildscript {
                 minSdkVersion    : 16,
                 targetSdkVersion : 27,
                 versionCode      : 1,
-                versionName      : '2.0.1'
+                versionName      : '2.0.2'
         ]
 
         bintray = [
