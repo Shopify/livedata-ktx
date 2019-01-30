@@ -29,10 +29,38 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import java.lang.ref.WeakReference
 
+private typealias ObserverWrappers<T> = MutableList<Pair<WeakReference<Observer<in T>>, WeakReference<Observer<T>>>>
+
+private fun <T> ObserverWrappers<T>.get(observer: Observer<in T>): Observer<T>? =
+    indexOfFirst { it.first.get() == observer }
+        .takeUnless { it < 0 }
+        ?.let { this[it].second.get() }
+
+private fun <T> ObserverWrappers<T>.getOrElse(
+    observer: Observer<in T>,
+    wrapper: Observer<T>
+): Observer<T> = get(observer) ?: wrapper
+
+private fun <T> ObserverWrappers<T>.putIfAbsent(observer: Observer<in T>, wrapper: Observer<T>) {
+    val index = indexOfFirst { it.first.get() == observer }
+    if (index < 0) {
+        add(Pair(WeakReference(observer), WeakReference(wrapper)))
+    }
+}
+
+private fun <T> ObserverWrappers<T>.removeIfPresent(observer: Observer<in T>) {
+    val index = indexOfFirst { it.first.get() == observer }
+    if (index >= 0) {
+        removeAt(index)
+    }
+}
+
 open class PublishLiveDataKtx<T> internal constructor(
     private val source: LiveData<*>?,
     private val isPublish: Boolean = (source as? PublishLiveDataKtx<*>)?.isPublish == true
 ) : MediatorLiveDataKtx<T>() {
+
+    private val observerWrappers: ObserverWrappers<T> = mutableListOf()
 
     private var _version = 0
     private var version: Int
@@ -45,9 +73,6 @@ open class PublishLiveDataKtx<T> internal constructor(
             }
         }
 
-    private val observerList =
-        mutableListOf<Pair<WeakReference<Observer<in T>>, WeakReference<Observer<T>>>>()
-
     constructor() : this(null, true)
 
     override fun setValue(value: T) {
@@ -57,17 +82,28 @@ open class PublishLiveDataKtx<T> internal constructor(
 
     override fun observe(owner: LifecycleOwner, observer: Observer<in T>) {
         val observeSinceVersion = version
-        val wrapper = Observer<T> {
+        val wrapper = observerWrappers.getOrElse(observer, Observer {
             if (!isPublish || version > observeSinceVersion) {
                 observer.onChanged(it)
             }
-        }
-        observerList.add(Pair(WeakReference(observer), WeakReference(wrapper)))
+        })
+        observerWrappers.putIfAbsent(observer, wrapper)
         super.observe(owner, wrapper)
     }
 
+    override fun observeForever(observer: Observer<in T>) {
+        val observeSinceVersion = version
+        val wrapper = observerWrappers.getOrElse(observer, Observer {
+            if (!isPublish || version > observeSinceVersion) {
+                observer.onChanged(it)
+            }
+        })
+        observerWrappers.putIfAbsent(observer, wrapper)
+        super.observeForever(wrapper)
+    }
+
     override fun removeObserver(observer: Observer<in T>) {
-        val target = observerList.find { it.first.get() == observer }?.second?.get() ?: observer
-        super.removeObserver(target)
+        observerWrappers.get(observer)?.let { super.removeObserver(it) }
+        observerWrappers.removeIfPresent(observer)
     }
 }

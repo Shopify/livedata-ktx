@@ -73,9 +73,9 @@ class LiveDataKtxTest : LifecycleOwner {
         liveData.value = true
         liveData.value = false
 
-        val expected: Boolean = liveData.value
-        assertEquals(expected, false)
-        assertEquals(observeValues, listOf(true, false))
+        val current: Boolean = liveData.value
+        assertEquals(false, current)
+        assertEquals(listOf(true, false), observeValues)
     }
 
     @Test
@@ -92,9 +92,9 @@ class LiveDataKtxTest : LifecycleOwner {
         liveData.value = null
         liveData.value = false
 
-        val expected: Boolean? = liveData.value
-        assertEquals(expected, false)
-        assertEquals(observeValues, listOf(null, true, null, false))
+        val current: Boolean? = liveData.value
+        assertEquals(false, current)
+        assertEquals(listOf(null, true, null, false), observeValues)
     }
 
     @Test
@@ -103,7 +103,7 @@ class LiveDataKtxTest : LifecycleOwner {
         val actual = mutableListOf<Boolean>()
         val observer = Observer<Boolean> { actual.add(it) }
         liveData
-            .filter { it == true }
+            .filter { it }
             .observe(this, observer)
 
         liveData.value = true
@@ -111,8 +111,7 @@ class LiveDataKtxTest : LifecycleOwner {
         liveData.value = true
         liveData.value = false
 
-        val expected = mutableListOf(true, true)
-        assertEquals(expected, actual)
+        assertEquals(listOf(true, true), actual)
     }
 
     @Test
@@ -132,8 +131,7 @@ class LiveDataKtxTest : LifecycleOwner {
         liveData.value = null
         liveData.value = false
 
-        val expected = mutableListOf(true, true)
-        assertEquals(expected, actual)
+        assertEquals(listOf(true, true), actual)
     }
 
     @Test
@@ -150,8 +148,7 @@ class LiveDataKtxTest : LifecycleOwner {
         liveData.value = false
         liveData.value = true
 
-        val expected = mutableListOf(true, true, true, true)
-        assertEquals(expected, actual)
+        assertEquals(listOf(true, true, true, true), actual)
     }
 
     @Test
@@ -172,8 +169,7 @@ class LiveDataKtxTest : LifecycleOwner {
         liveData.value = null
         liveData.value = true
 
-        val expected = mutableListOf(true, true, true, true, true, true, true, true)
-        assertEquals(expected, actual)
+        assertEquals(listOf(true, true, true, true, true, true, true, true), actual)
     }
 
     @Test
@@ -195,8 +191,7 @@ class LiveDataKtxTest : LifecycleOwner {
         liveData.value = 2
         liveData.value = 3
 
-        val expected = mutableListOf(true, false, true, false)
-        assertEquals(expected, actual)
+        assertEquals(listOf(true, false, true, false), actual)
     }
 
     @Test
@@ -222,8 +217,7 @@ class LiveDataKtxTest : LifecycleOwner {
         liveData.value = null
         liveData.value = 3
 
-        val expected = mutableListOf(false, true, false, false, false, true, false, false)
-        assertEquals(expected, actual)
+        assertEquals(listOf(false, true, false, false, false, true, false, false), actual)
     }
 
     @Test
@@ -243,8 +237,7 @@ class LiveDataKtxTest : LifecycleOwner {
         liveData.value = null
         liveData.value = false
 
-        val expected = mutableListOf(true, false, true, false)
-        assertEquals(expected, actual)
+        assertEquals(listOf(true, false, true, false), actual)
     }
 
     @Test
@@ -264,8 +257,7 @@ class LiveDataKtxTest : LifecycleOwner {
         liveData.value = null
         liveData.value = false
 
-        val expected = mutableListOf(null, true, null, false, null, true, null, false)
-        assertEquals(expected, actual)
+        assertEquals(listOf(null, true, null, false, null, true, null, false), actual)
     }
 
     @Test
@@ -274,34 +266,128 @@ class LiveDataKtxTest : LifecycleOwner {
         val actual = mutableListOf<Int>()
         val observer = Observer<Int> { actual.add(it) }
         val liveDataKtx: MutableLiveDataKtx<Int> = liveData.toKtx()
-        liveDataKtx.observe(this, observer)
+        liveData.value = -1
 
+        liveDataKtx.observe(this, observer)
         liveData.value = 0
         liveDataKtx.removeObserver(observer)
+
+        assertEquals(listOf(-1, 0), actual)
+        actual.clear()
+
         liveData.value = 1
         liveData.value = 2
         liveDataKtx.observe(this, observer)
         liveData.value = 3
 
-        val expected = mutableListOf(0, 2, 3)
-        assertEquals(expected, actual)
+        assertEquals(listOf(2, 3), actual)
     }
 
     @Test
-    fun publish_reattach() {
-        val liveData = PublishLiveDataKtx<Boolean>()
-        val actual = mutableListOf<Boolean>()
-        val observer = Observer<Boolean> { actual.add(it) }
-        liveData.observe(this, observer)
+    fun ktx_reattach_withoutInitialValue() {
+        val liveData = MutableLiveData<Int>()
+        val actual = mutableListOf<Int>()
+        val observer = Observer<Int> { actual.add(it) }
+        val liveDataKtx: MutableLiveDataKtx<Int> = liveData.toKtx()
 
-        liveData.value = true
+        liveDataKtx.observe(this, observer)
+        liveData.value = 0
+        liveDataKtx.removeObserver(observer)
+
+        assertEquals(listOf(0), actual)
+        actual.clear()
+
+        liveData.value = 1
+        liveData.value = 2
+        liveDataKtx.observe(this, observer)
+        liveData.value = 3
+
+        assertEquals(listOf(2, 3), actual)
+    }
+
+    @Test
+    fun publishObserve_reattach() {
+        val liveData = PublishLiveDataKtx<Int>()
+        val actual = mutableListOf<Int>()
+        val observer = Observer<Int> { actual.add(it) }
+        liveData.value = -1
+
+        liveData.observe(this, observer)
+        liveData.value = 0
         liveData.removeObserver(observer)
-        liveData.value = false
-        liveData.value = true
-        liveData.observe(this, observer)
-        liveData.value = false
 
-        val expected = mutableListOf(true, false)
-        assertEquals(expected, actual)
+        assertEquals(listOf(0), actual)
+        actual.clear()
+
+        liveData.value = 1
+        liveData.value = 2
+        liveData.observe(this, observer)
+        liveData.value = 3
+
+        assertEquals(listOf(3), actual)
+    }
+
+    @Test
+    fun publishObserve_reattach_withoutInitialValue() {
+        val liveData = PublishLiveDataKtx<Int>()
+        val actual = mutableListOf<Int>()
+        val observer = Observer<Int> { actual.add(it) }
+
+        liveData.observe(this, observer)
+        liveData.value = 0
+        liveData.removeObserver(observer)
+
+        assertEquals(listOf(0), actual)
+        actual.clear()
+
+        liveData.value = 1
+        liveData.value = 2
+        liveData.observe(this, observer)
+        liveData.value = 3
+
+        assertEquals(listOf(3), actual)
+    }
+
+    @Test
+    fun publishObserveForever_reattach() {
+        val liveData = PublishLiveDataKtx<Int>()
+        val actual = mutableListOf<Int>()
+        val observer = Observer<Int> { actual.add(it) }
+        liveData.value = -1
+
+        liveData.observeForever(observer)
+        liveData.value = 0
+        liveData.removeObserver(observer)
+
+        assertEquals(listOf(0), actual)
+        actual.clear()
+
+        liveData.value = 1
+        liveData.value = 2
+        liveData.observeForever(observer)
+        liveData.value = 3
+
+        assertEquals(listOf(3), actual)
+    }
+
+    @Test
+    fun publishObserveForever_reattach_withoutInitialValue() {
+        val liveData = PublishLiveDataKtx<Int>()
+        val actual = mutableListOf<Int>()
+        val observer = Observer<Int> { actual.add(it) }
+
+        liveData.observeForever(observer)
+        liveData.value = 0
+        liveData.removeObserver(observer)
+
+        assertEquals(listOf(0), actual)
+        actual.clear()
+
+        liveData.value = 1
+        liveData.value = 2
+        liveData.observeForever(observer)
+        liveData.value = 3
+
+        assertEquals(listOf(3), actual)
     }
 }
