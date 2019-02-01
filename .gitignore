@@ -8,6 +8,7 @@
 .idea/runConfigurations.xml
 .idea/vcs.xml
 .idea/workspace.xml
+!.idea/codeStyles/*
 
 # Built application files
 *.apk
