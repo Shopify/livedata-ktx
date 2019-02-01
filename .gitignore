@@ -9,6 +9,7 @@
 .idea/vcs.xml
 .idea/workspace.xml
 !.idea/codeStyles/*
+!.idea/copyright/*
 
 # Built application files
 *.apk
