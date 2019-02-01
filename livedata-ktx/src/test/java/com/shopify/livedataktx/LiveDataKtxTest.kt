@@ -79,6 +79,27 @@ class LiveDataKtxTest : LifecycleOwner {
     }
 
     @Test
+    fun nonNull_fromLiveData() {
+        val liveData = MutableLiveData<Boolean>()
+        val observeValues = mutableListOf<Boolean>()
+        val liveDataKtx = liveData.toKtx()
+
+        liveDataKtx.observe(this, Observer {
+            observeValues.add(it)
+        })
+
+        liveData.value = null
+        liveData.value = true
+        liveData.value = null
+        liveData.value = false
+        liveData.value = null
+
+        val current: Boolean = liveDataKtx.value
+        assertEquals(false, current)
+        assertEquals(listOf(true, false), observeValues)
+    }
+
+    @Test
     fun nullable() {
         val liveData = MutableLiveDataKtx<Boolean?>()
         val observeValues = mutableListOf<Boolean?>()
