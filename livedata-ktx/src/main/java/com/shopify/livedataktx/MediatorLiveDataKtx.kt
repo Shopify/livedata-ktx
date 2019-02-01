@@ -24,9 +24,44 @@
 
 package com.shopify.livedataktx
 
-/**
- * A lifecycle-aware observable that sends only new updates after subscription, used for events like
- * navigation and Snackbar messages.
- * Ref: https://github.com/googlesamples/android-architecture/blob/dev-todo-mvvm-live/todoapp/app/src/main/java/com/example/android/architecture/blueprints/todoapp/SingleLiveEvent.java
- */
-open class SingleLiveData<T> : SupportMediatorLiveData<T>(true)
+import androidx.annotation.MainThread
+import androidx.annotation.NonNull
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.Observer
+
+open class MediatorLiveDataKtx<T> : MutableLiveDataKtx<T>() {
+
+    private val mediatorLiveData = CustomMediatorLiveData<T>()
+
+    @MainThread
+    fun <S> addSource(source: LiveData<S>, @NonNull onChanged: Observer<in S>) {
+        mediatorLiveData.addSource(source, onChanged)
+    }
+
+    @MainThread
+    fun <S> removeSource(toRemote: LiveData<S>) {
+        mediatorLiveData.removeSource(toRemote)
+    }
+
+    override fun onActive() {
+        super.onActive()
+        mediatorLiveData.onActive()
+    }
+
+    override fun onInactive() {
+        super.onInactive()
+        mediatorLiveData.onInactive()
+    }
+
+    private class CustomMediatorLiveData<T> : MediatorLiveData<T>() {
+
+        public override fun onActive() {
+            super.onActive()
+        }
+
+        public override fun onInactive() {
+            super.onInactive()
+        }
+    }
+}
