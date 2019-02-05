@@ -218,6 +218,21 @@ class LiveDataTest : LifecycleOwner {
     }
 
     @Test
+    fun single_observeForever() {
+        val liveData: MutableLiveData<Int> = SingleLiveData()
+        val actuals: MutableList<Int?> = mutableListOf()
+        val observer: (t: Int?) -> Unit = { actuals.add(it) }
+
+        liveData.value = 1
+        liveData.observeForever(observer)
+        liveData.value = 2
+        liveData.value = 3
+
+        val expecteds = mutableListOf(2, 3)
+        assertEquals(expecteds, actuals)
+    }
+
+    @Test
     fun combineWith() {
         val firstSource = MutableLiveData<Int>()
         val secondSource = MutableLiveData<String>()
@@ -252,5 +267,71 @@ class LiveDataTest : LifecycleOwner {
                 .observe(this, observer)
 
         assertEquals(mutableListOf(3, 1, 3, 1, 3, 1, 3), actuals)
+    }
+
+    @Test
+    fun reattach() {
+        val liveData: MutableLiveData<Int> = MutableLiveData()
+        val actuals: MutableList<Int?> = mutableListOf()
+        val observer: (t: Int?) -> Unit = { actuals.add(it) }
+        val removable = liveData.observe(this, observer)
+
+        liveData.value = 1
+        liveData.value = 2
+        removable.removeObserver()
+        assertEquals(listOf(1, 2), actuals)
+        actuals.clear()
+
+        liveData.value = 3
+        liveData.value = 4
+
+        liveData.observe(this, observer)
+        liveData.value = 5
+        liveData.value = 6
+        assertEquals(listOf(4, 5, 6), actuals)
+    }
+
+    @Test
+    fun reattach_singleLiveData() {
+        val liveData: MutableLiveData<Int> = SingleLiveData()
+        val actuals: MutableList<Int?> = mutableListOf()
+        val observer: (t: Int?) -> Unit = { actuals.add(it) }
+        val removable = liveData.observe(this, observer)
+
+        liveData.value = 1
+        liveData.value = 2
+        removable.removeObserver()
+        assertEquals(listOf(1, 2), actuals)
+        actuals.clear()
+
+        liveData.value = 3
+        liveData.value = 4
+
+        liveData.observe(this, observer)
+        liveData.value = 5
+        liveData.value = 6
+        assertEquals(listOf(5, 6), actuals)
+    }
+
+    @Test
+    fun reattach_singleLiveData_observeForever() {
+        val liveData: MutableLiveData<Int> = SingleLiveData()
+        val actuals: MutableList<Int?> = mutableListOf()
+        val observer: (t: Int?) -> Unit = { actuals.add(it) }
+        val removable = liveData.observe(observer)
+
+        liveData.value = 1
+        liveData.value = 2
+        removable.removeObserver()
+        assertEquals(listOf(1, 2), actuals)
+        actuals.clear()
+
+        liveData.value = 3
+        liveData.value = 4
+
+        liveData.observe( observer)
+        liveData.value = 5
+        liveData.value = 6
+        assertEquals(listOf(5, 6), actuals)
     }
 }
