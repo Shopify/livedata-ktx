@@ -28,28 +28,46 @@ import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.MediatorLiveData
 import android.arch.lifecycle.Observer
 
-open class SupportMediatorLiveData<T>(internal val isSingle: Boolean = false, private val versionProvider: (() -> Int)? = null) : MediatorLiveData<T>() {
+open class SupportMediatorLiveData<T>(
+    internal val isSingle: Boolean = false,
+    private val versionProvider: (() -> Int)? = null
+) : MediatorLiveData<T>() {
+
+    private val observerWrappers = mutableMapOf<Observer<T>, Observer<T>>();
 
     private var _version = 0
     internal val version: Int get() = versionProvider?.let { it() } ?: _version
 
     @Deprecated("Use observe extension")
     override fun observe(owner: LifecycleOwner, observer: Observer<T>) {
-        val observerVersion = version
-        super.observe(owner, Observer {
-            if (!isSingle || observerVersion < version) {
-                observer.onChanged(it)
-            }
-        })
+        super.observe(owner, getWrapperObserver(observer))
     }
 
     @Deprecated("Use observe extension without LifecycleOwner")
     override fun observeForever(observer: Observer<T>) {
-        super.observeForever(observer)
+        super.observeForever(getWrapperObserver(observer))
     }
 
     override fun setValue(value: T?) {
         _version++
         super.setValue(value)
+    }
+
+    override fun removeObserver(observer: Observer<T>) {
+        observerWrappers[observer]?.also {
+            super.removeObserver(it)
+            observerWrappers.remove(observer)
+        }
+    }
+
+    private fun getWrapperObserver(observer: Observer<T>): Observer<T> {
+        val observerVersion = version
+        val wrapper = observerWrappers[observer] ?: Observer {
+            if (!isSingle || observerVersion < version) {
+                observer.onChanged(it)
+            }
+        }
+        observerWrappers[observer] = wrapper
+        return wrapper
     }
 }
