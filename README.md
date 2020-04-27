@@ -10,7 +10,7 @@ Kotlin extension for LiveData. This library focuses on three things:
 - Preserve immutability.
 - Extensibility.
 
-About Kotlin friendly, thanks to `androidx.lifecycle:livedata:2.0.0` release, you can explicitly set optinal type for LiveData. LiveData<Boolean> and LiveData<Boolean?> are supported now. However, you can still set null value, for instance:
+About Kotlin friendly, thanks to `androidx.lifecycle:livedata:2.0.0` release, you can explicitly set optional type for LiveData. LiveData<Boolean> and LiveData<Boolean?> are supported now. However, you can still set null value, for instance:
 
 ```kotlin
 // Allow to set null value to LiveData
