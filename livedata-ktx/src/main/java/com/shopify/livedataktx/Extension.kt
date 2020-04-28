@@ -117,14 +117,26 @@ private fun <T> toNullableKtx(source: LiveData<T>): MediatorLiveDataKtx<T?> {
     return output
 }
 
-fun <T> LiveData<T>.toKtx(): LiveDataKtx<T> = toKtx(this)
+fun <T : Any> LiveData<T>.toKtx(): LiveDataKtx<T> = toKtx(this)
 
-fun <T> MutableLiveData<T>.toKtx(): MutableLiveDataKtx<T> = toKtx(this)
+fun <T : Any> MutableLiveData<T>.toKtx(): MutableLiveDataKtx<T> = toKtx(this)
 
-fun <T> MediatorLiveData<T>.toKtx(): MediatorLiveDataKtx<T> = toKtx(this)
+fun <T : Any> MediatorLiveData<T>.toKtx(): MediatorLiveDataKtx<T> = toKtx(this)
 
+@JvmName("toKtxNullable")
+fun <T : Any?> LiveData<T>.toKtx(): LiveDataKtx<T?> = toNullableKtx(this)
+
+@JvmName("toKtxNullable")
+fun <T : Any?> MutableLiveData<T>.toKtx(): MutableLiveDataKtx<T?> = toNullableKtx(this)
+
+@JvmName("toKtxNullable")
+fun <T : Any?> MediatorLiveData<T>.toKtx(): MediatorLiveDataKtx<T?> = toNullableKtx(this)
+
+@Deprecated("Use toKtx function", ReplaceWith("toKtx()"), DeprecationLevel.WARNING)
 fun <T> LiveData<T>.toNullableKtx(): LiveDataKtx<T?> = toNullableKtx(this)
 
+@Deprecated("Use toKtx function", ReplaceWith("toKtx()"), DeprecationLevel.WARNING)
 fun <T> MutableLiveData<T>.toNullableKtx(): MutableLiveDataKtx<T?> = toNullableKtx(this)
 
+@Deprecated("Use toKtx function", ReplaceWith("toKtx()"), DeprecationLevel.WARNING)
 fun <T> MediatorLiveData<T>.toNullableKtx(): MediatorLiveDataKtx<T?> = toNullableKtx(this)
